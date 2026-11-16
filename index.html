@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https://api.homeknocktown.co.kr; img-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Pickle Login Bridge</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="brand"><a href="/">Pickle <span>Login Bridge</span></a></header>
+  <main id="app" class="card" aria-labelledby="page-title">
+    <h1 id="page-title">피클과 연결할 서비스를 선택하세요</h1>
+    <p id="intro">입력한 정보는 이 브릿지 서버에 저장되지 않고, 내 기기 연결용 파일만 바로 생성됩니다.</p>
+    <div id="content"></div>
+    <p id="status" role="status" aria-live="polite" aria-atomic="true">서비스를 불러오고 있습니다.</p>
+    <noscript><p>연결 파일을 만들려면 브라우저에서 JavaScript를 켜 주세요.</p></noscript>
+  </main>
+  <footer>연결 파일은 피클에 전달해 주세요. 파일에는 로그인에 필요한 정보가 들어 있습니다.</footer>
+</body>
+</html>

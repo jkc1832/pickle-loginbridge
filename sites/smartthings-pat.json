@@ -1,0 +1,14 @@
+{
+  "$schema": "./_schema.json",
+  "siteId": "smartthings-pat",
+  "name": "SmartThings 개인 토큰",
+  "bridgeUrl": "https://pickle-loginbridge--smartthings-pat.pages.dev/",
+  "originLoginUrl": "https://account.smartthings.com/tokens",
+  "description": "공식 사이트에서 발급받은 개인 토큰으로 연결 파일을 만듭니다. 새 개인 토큰은 발급 후 24시간 동안 사용할 수 있습니다.",
+  "mode": "token_convert",
+  "filename": "smartthings_config.json",
+  "fields": [
+    { "name": "token", "label": "개인 토큰", "type": "password", "autocomplete": "current-password", "maxLength": 8192 }
+  ],
+  "output": { "token": { "$field": "token" } }
+}

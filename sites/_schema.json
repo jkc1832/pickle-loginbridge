@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pickle Login Bridge site",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["siteId", "name", "bridgeUrl", "originLoginUrl", "description", "mode", "filename", "fields", "output"],
+  "properties": {
+    "$schema": { "const": "./_schema.json" },
+    "siteId": { "type": "string", "maxLength": 43, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)+$" },
+    "name": { "$ref": "#/$defs/label" },
+    "bridgeUrl": { "type": "string", "format": "uri", "maxLength": 2048, "pattern": "^https://[^/@?#]+(?:/[^#]*)?$" },
+    "originLoginUrl": { "type": "string", "format": "uri", "maxLength": 2048, "pattern": "^https?://[^/@?#]+(?:/[^#]*)?$" },
+    "description": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "\\S" },
+    "mode": { "enum": ["config_download", "api_token", "token_convert"] },
+    "filename": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}\\.json$" },
+    "requireDownloadParam": { "type": "boolean", "default": false },
+    "fields": {
+      "type": "array", "minItems": 1, "maxItems": 20,
+      "items": { "$ref": "#/$defs/field" },
+      "contains": { "type": "object", "required": ["type"], "properties": { "type": { "const": "password" } } }
+    },
+    "output": { "$ref": "#/$defs/output" },
+    "api": {
+      "type": "object", "additionalProperties": false, "required": ["url", "body"],
+      "properties": {
+        "url": { "type": "string", "format": "uri", "maxLength": 2048, "pattern": "^https://[^/@?#]+(?:/[^?#]*)?$" },
+        "body": { "$ref": "#/$defs/localOutput" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "mode": { "const": "api_token" } } },
+      "then": { "required": ["api"] },
+      "else": { "not": { "required": ["api"] }, "properties": { "output": { "$ref": "#/$defs/localOutput" } } }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "token_convert" } } },
+      "then": { "properties": { "fields": { "items": { "properties": { "type": { "const": "password" } } } } } }
+    }
+  ],
+  "$defs": {
+    "label": { "type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S" },
+    "key": { "type": "string", "pattern": "^(?!(?:__proto__|prototype|constructor)$)[A-Za-z_][A-Za-z0-9_]*$" },
+    "field": {
+      "type": "object", "additionalProperties": false, "required": ["name", "label", "type", "autocomplete"],
+      "properties": {
+        "name": { "$ref": "#/$defs/key", "maxLength": 64 },
+        "label": { "$ref": "#/$defs/label" },
+        "type": { "enum": ["text", "password"] },
+        "autocomplete": { "enum": ["username", "current-password", "off"] },
+        "inputmode": { "enum": ["text", "numeric", "email", "tel"] },
+        "maxLength": { "type": "integer", "minimum": 1, "maximum": 16384, "default": 4096 }
+      },
+      "if": { "properties": { "type": { "const": "password" } } },
+      "then": { "properties": { "autocomplete": { "const": "current-password" } } },
+      "else": { "properties": { "autocomplete": { "enum": ["username", "off"] } } }
+    },
+    "fieldRef": {
+      "type": "object", "additionalProperties": false, "required": ["$field"],
+      "properties": { "$field": { "$ref": "#/$defs/key" } }
+    },
+    "responseRef": {
+      "type": "object", "additionalProperties": false, "required": ["$response"],
+      "properties": { "$response": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "$ref": "#/$defs/key" } } }
+    },
+    "output": { "type": "object", "minProperties": 1, "maxProperties": 100, "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/template" } },
+    "localOutput": { "type": "object", "minProperties": 1, "maxProperties": 100, "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/localTemplate" } },
+    "template": {
+      "anyOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "$ref": "#/$defs/fieldRef" },
+        { "$ref": "#/$defs/responseRef" },
+        { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/template" } },
+        { "type": "object", "maxProperties": 100, "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/template" } }
+      ]
+    },
+    "localTemplate": {
+      "anyOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "$ref": "#/$defs/fieldRef" },
+        { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/localTemplate" } },
+        { "type": "object", "maxProperties": 100, "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/localTemplate" } }
+      ]
+    }
+  }
+}

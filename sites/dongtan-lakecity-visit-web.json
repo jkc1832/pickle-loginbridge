@@ -1,0 +1,16 @@
+{
+  "$schema": "./_schema.json",
+  "siteId": "dongtan-lakecity-visit-web",
+  "name": "동탄 레이크시티 방문차량",
+  "bridgeUrl": "https://pickle-loginbridge--dongtan-lakecity-visit-web.pages.dev/",
+  "originLoginUrl": "http://210.217.80.232/Account/Login",
+  "description": "동·호수와 비밀번호를 피클의 방문차량 등록에 사용할 연결 파일로 만듭니다.",
+  "mode": "config_download",
+  "filename": "dongtan_lakecity_visit_config.json",
+  "fields": [
+    { "name": "dong", "label": "동", "type": "text", "autocomplete": "username", "inputmode": "numeric", "maxLength": 10 },
+    { "name": "ho", "label": "호", "type": "text", "autocomplete": "off", "inputmode": "numeric", "maxLength": 10 },
+    { "name": "password", "label": "비밀번호", "type": "password", "autocomplete": "current-password", "maxLength": 1024 }
+  ],
+  "output": { "dong": { "$field": "dong" }, "ho": { "$field": "ho" }, "password": { "$field": "password" } }
+}

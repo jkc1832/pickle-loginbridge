@@ -1,0 +1,24 @@
+{
+  "$schema": "./_schema.json",
+  "siteId": "knocktown-appapi",
+  "name": "노크타운 앱 로그인",
+  "bridgeUrl": "https://pickle-loginbridge--knocktown-appapi.pages.dev/?download=1",
+  "originLoginUrl": "https://homeknocktown.co.kr/",
+  "description": "노크타운 앱 계정으로 로그인해 피클에서 사용할 연결 파일을 만듭니다. 원본 주소는 서비스 홈페이지입니다.",
+  "mode": "api_token",
+  "requireDownloadParam": true,
+  "filename": "knocktown_token.json",
+  "fields": [
+    { "name": "username", "label": "아이디", "type": "text", "autocomplete": "username", "maxLength": 200 },
+    { "name": "password", "label": "비밀번호", "type": "password", "autocomplete": "current-password", "maxLength": 1024 }
+  ],
+  "api": {
+    "url": "https://api.homeknocktown.co.kr/v1/auth/token/authorize",
+    "body": { "username": { "$field": "username" }, "password": { "$field": "password" } }
+  },
+  "output": {
+    "accessToken": { "$response": ["accessToken"] },
+    "refreshToken": { "$response": ["refreshToken"] },
+    "expiresAt": { "$response": ["expiresAt"] }
+  }
+}
